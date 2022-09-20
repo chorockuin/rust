@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'common_programming'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=common_programming",
+                    "--package=common_programming"
+                ],
+                "filter": {
+                    "name": "common_programming",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'common_programming'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=common_programming",
+                    "--package=common_programming"
+                ],
+                "filter": {
+                    "name": "common_programming",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
