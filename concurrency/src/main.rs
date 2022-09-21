@@ -181,6 +181,12 @@ fn thread_mutex() {
     println!("Result: {}", *counter.lock().unwrap());
 }
 
+// Send 트레잇, Sync 트레잇을 구현하면 동시성을 지원하는 type을 만들 수 있음
+// Rust의 대부분 타입은 Send 트레잇을 구현하고 있으나
+// 위에서 예를 들었다시피 Rc<T> 같은 경우에는 구현하지 않고 있음
+// Send -> 현재 thread 내의 객체 소유권을 생성하는 thread로 안전하게 move할 수 있도록 구현함
+// Sync -> 여러 thread에서 접근할 수 있도록 구현함
+
 fn main() {
     base();
     join();
