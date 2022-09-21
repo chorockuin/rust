@@ -116,10 +116,77 @@ fn send_vector_vals() {
     }
 }
 
+use std::sync::Mutex;
+
+fn mutex() {
+    // Mutex<T>는 뜯어보면 스마트포인터다
+    // 결국 스마트포인터 m이 immutable하다는 얘기
+    let m = Mutex::new(5);
+    {
+        // lock()의 리턴값(num)을 내부 값(m)에 대한 가변 참조자 처럼 다룰 수 있음
+        let mut num = m.lock().unwrap();
+        // 값을 변경
+        *num = 6;
+    } // 스코브 밖으로 나오면서 unlock 됨
+
+    println!("m = {:?}", m);
+}
+
+use std::rc::Rc;
+use std::sync::Arc;
+fn thread_mutex() {
+    // let counter = Mutex::new(0);
+    // let counter = Rc::new(Mutex::new(0));
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        // 첫번째 loop에서 counter가 move되어 버렸기 때문에
+        // 두번째 loop에서 counter를 move시킬 수 없음
+        // 컴파일 에러 발생함
+        // let handle = thread::spawn(move || {
+        //     let mut num = counter.lock().unwrap();
+        //     *num += 1;
+        // });
+
+        // counter를 공유 스마트 포인터인 Rc<>를 사용해 복제한 후 move시켜본다
+        // 그러나 역시나 에러난다. 이유는 counter를 threadsafe하게 move시킬 수 없다는 것
+        // Rc<>의 read/write가 threadsafe하도록 Send trait이 구현되어 있어야 함
+        // 이를 만족하는 것이 atomic reference counting. 즉, Arc<T> 이다
+        // let counter = Rc::clone(&counter);
+        // let handle = thread::spawn(move || {
+        //     let mut num = counter.lock().unwrap();
+        //     *num += 1;
+        // });
+
+        // atomic reference counting는 reference counting 시에 threadsafe를 제공함
+        // Mutex<T>/Arc<T>의 관계는 마치 RefCell<T>/Rc<T> 의 관계와 비슷하다
+        // Rc<T>의 내용을 변경하고자 RefCell<T>를 사용했듯이
+        // Arc<T>의 내용을 변경하고자 Mutex<T>를 사용했다
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+
+        handles.push(handle);
+    }
+
+    // 모든 쓰레드가 종료되길 기다림
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    // count 값 확인
+    println!("Result: {}", *counter.lock().unwrap());
+}
+
 fn main() {
     base();
     join();
     closure();
     channel();
     send_vector_vals();
+    mutex();
+    thread_mutex();
 }
