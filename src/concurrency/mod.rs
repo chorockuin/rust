@@ -187,7 +187,7 @@ fn thread_mutex() {
 // Send -> 현재 thread 내의 객체 소유권을 생성하는 thread로 안전하게 move할 수 있도록 구현함
 // Sync -> 여러 thread에서 접근할 수 있도록 구현함
 
-fn main() {
+pub fn sample() {
     base();
     join();
     closure();

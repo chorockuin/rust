@@ -1,4 +1,4 @@
-fn main() {
+pub fn sample() {
     test_ip_addr_enum();
     test_message_enum();
     test_option();

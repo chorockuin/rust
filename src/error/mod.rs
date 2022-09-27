@@ -4,8 +4,8 @@ use std::io::ErrorKind;
 use std::io;
 use std::io::Read;
 
-fn main() {
-    handle_unrecoverable_error();
+pub fn sample() {
+    // handle_unrecoverable_error();
     // handle_recoverable_error();
 }
 

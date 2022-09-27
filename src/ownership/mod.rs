@@ -1,4 +1,4 @@
-fn main() {
+pub fn sample() {
     test_stack_var();
     test_heap_var();
     test_ownership();

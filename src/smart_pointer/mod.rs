@@ -1,4 +1,4 @@
-fn main() {
+pub fn sample() {
     test_box();
     test_recursive_type();
     test_deref();

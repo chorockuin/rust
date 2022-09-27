@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'enum_pattern_matching'",
+            "name": "Debug executable 'rust'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=enum_pattern_matching",
-                    "--package=enum_pattern_matching"
+                    "--bin=rust",
+                    "--package=rust"
                 ],
                 "filter": {
-                    "name": "enum_pattern_matching",
+                    "name": "rust",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'enum_pattern_matching'",
+            "name": "Debug unit tests in executable 'rust'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=enum_pattern_matching",
-                    "--package=enum_pattern_matching"
+                    "--bin=rust",
+                    "--package=rust"
                 ],
                 "filter": {
-                    "name": "enum_pattern_matching",
+                    "name": "rust",
                     "kind": "bin"
                 }
             },

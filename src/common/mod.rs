@@ -1,6 +1,6 @@
 const const_var: u32 = 100000;
 
-fn main() {
+pub fn sample() {
     println!("{}", const_var);
 
     test_mutation();
