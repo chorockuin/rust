@@ -11,7 +11,7 @@ fn main() {
     // concurrency::sample();
     // enum_match::sample();
     // error::sample();
-    // ownership::sample();
+    ownership::sample();
     // smart_pointer::sample();
-    tutorial::sample();
+    // tutorial::sample();
 }

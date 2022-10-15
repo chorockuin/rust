@@ -80,10 +80,32 @@ fn dangling_ref() {
     println!("{}", s);
 }
 
+fn slice() {
+    let s = String::from("slice this sentence");
+    let slice1 = &s[..5];
+    let slice2 = &s[6..];
+    println!("{}", slice1);
+    println!("{}", slice2);
+
+    let slice3 = first_word(&s);
+    println!("{}", slice3);
+}
+
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+    // for (i, &item) in bytes.iter().emumerate() {
+    //     if item == b' ' {
+    //         return &s[0..i];
+    //     }
+    // }
+    &s[..]
+}
+
 pub fn sample() {
     stack_var();
     heap_var();
     ownership();
     reference();
     dangling_ref();
+    slice();
 }
