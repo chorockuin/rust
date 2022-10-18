@@ -22,7 +22,7 @@ fn main() {
     // guess_game::sample();
     // common::sample();
     // ownership::sample();
-    structures::sample();
+    // structures::sample();
     // enum_match::sample();
     // modules::sample();
     // collections::sample();
@@ -30,7 +30,7 @@ fn main() {
     // generic_traits_lifetime::sample();
     // testing::sample();
     // command_program::sample();
-    // functional::sample();
+    functional::sample();
     // cargo_crate::sample()s
     // smart_pointer::sample();
     // concurrency::sample();
