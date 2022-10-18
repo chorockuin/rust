@@ -21,7 +21,8 @@ fn ownership_closure() {
 }
 
 struct Cacher<T>
-    // 환경 캡쳐 정책은 불변으로 빌려오겠다는 것(Fn)
+    // 환경 캡쳐 정책은 1개의 u32타입의 인자를 불변(Fn)으로 빌려오겠다는 것
+    // 그리고 1개의 u32 값을 리턴함
     where T: Fn(u32) -> u32 
 {
     calculation: T,
@@ -98,14 +99,19 @@ fn simple_iterator() {
         println!("Got: {}", val);
     }
 
-    let v2 = vec![1,2,3];
+    let v1 = vec![1,2,3];
     // next()를 사용하면 반복자의 내부 상태가 변경되기 때문에 mut로 정의해야 함
-    let mut v2_iter = v2.iter();
-    assert_eq!(v2_iter.next(), Some(&1));
+    let mut v1_iter = v1.iter();
+    assert_eq!(v1_iter.next(), Some(&1));
 
-    let v3 = vec![1,2,3];
-    let v4: Vec<_> = v3.iter().map(|x| x+1).collect(); // 이터레이터 + 클로저
-    assert_eq!(v4, vec![2,3,4]);
+    let v1 = vec![1,2,3];
+    let v1_iter = v1.iter();
+    let total: i32 = v1_iter.sum();
+    assert_eq!(total, 6);
+
+    let v1 = vec![1,2,3];
+    let v1: Vec<_> = v1.iter().map(|x| x+1).collect(); // 이터레이터 + 클로저
+    assert_eq!(v1, vec![2,3,4]);
 }
 
 #[derive(PartialEq, Debug)]
@@ -116,22 +122,19 @@ struct Shoe {
 
 fn shoes_in_my_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
     shoes.into_iter()
-        .filter(|s| s.size == shoe_size)
+        .filter(|s| s.size == shoe_size) // map은 벡터 크기 유지, filter는 벡터 크기 변경
         .collect()
 }
 
-#[test]
-fn filters_by_size() {
+fn complex_iterator() {
     let shoes = vec![
         Shoe { size: 10, style: String::from("sneaker") },
         Shoe { size: 13, style: String::from("sandal") },
         Shoe { size: 10, style: String::from("boot") },
     ];
 
-    let in_my_size = shoes_in_my_size(shoes, 10);
-
     assert_eq!(
-        in_my_size,
+        shoes_in_my_size(shoes, 10),
         vec![
             Shoe { size: 10, style: String::from("sneaker") },
             Shoe { size: 10, style: String::from("boot") },
@@ -139,7 +142,44 @@ fn filters_by_size() {
     );
 }
 
-fn complex_iterator() {
+struct Counter {
+    count: u32
+}
+
+impl Counter {
+    fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.count += 1;
+        if self.count < 6 {
+            Some(self.count)
+        } else {
+            None
+        }
+    }
+}
+
+fn my_iterator() {
+    let mut counter = Counter::new();
+    assert_eq!(counter.next(), Some(1));
+    assert_eq!(counter.next(), Some(2));
+    assert_eq!(counter.next(), Some(3));
+    assert_eq!(counter.next(), Some(4));
+    assert_eq!(counter.next(), Some(5));
+    assert_eq!(counter.next(), None);
+}
+
+fn using_other_iterator_trait_methods() {
+    let sum: u32 = Counter::new().zip(Counter::new().skip(1))
+                                 .map(|(a, b)| a * b)
+                                 .filter(|x| x % 3 == 0)
+                                 .sum();
+    assert_eq!(18, sum);
 }
 
 pub fn sample() {
@@ -148,4 +188,6 @@ pub fn sample() {
     ownership_closure();
     simple_iterator();
     complex_iterator();
+    my_iterator();
+    using_other_iterator_trait_methods();
 }
