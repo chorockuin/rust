@@ -1,17 +1,41 @@
-mod tutorial;
+mod guess_game;
 mod common;
-mod concurrency;
-mod enum_match;
-mod error;
 mod ownership;
+mod structures;
+mod enum_match;
+mod modules;
+// mod collections;
+mod error;
+// mod generic_traits_lifetime;
+// mod testing;
+// mod command_program;
+mod functional;
+// mod cargo_crates
 mod smart_pointer;
+mod concurrency;
+// mod oop;
+// mod pattern_match;
+// mod advanced;
+// mod web_server;
 
 fn main() {
+    // guess_game::sample();
     // common::sample();
-    // concurrency::sample();
+    // ownership::sample();
+    structures::sample();
     // enum_match::sample();
+    // modules::sample();
+    // collections::sample();
     // error::sample();
-    ownership::sample();
+    // generic_traits_lifetime::sample();
+    // testing::sample();
+    // command_program::sample();
+    // functional::sample();
+    // cargo_crate::sample()s
     // smart_pointer::sample();
-    // tutorial::sample();
+    // concurrency::sample();
+    // oop::sample();
+    // pattern_match::sample();
+    // advanced::sample();
+    // web_server::sample();
 }

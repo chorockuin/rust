@@ -81,8 +81,10 @@ fn dangling_ref() {
 }
 
 fn slice() {
-    let s = String::from("slice this sentence");
-    let slice1 = &s[..5];
+    let s = String::from("slice this sentence"); // s는 String
+    // s[..5]는 C++의 view와 비슷하다. s에 대한 참조 정보(s의 시작 주소 + 길이 5)를 가진 구조체다
+    // 그런 구조체를 immutable ref한 것이 slice1이다.
+    let slice1 = &s[..5]; 
     let slice2 = &s[6..];
     println!("{}", slice1);
     println!("{}", slice2);
