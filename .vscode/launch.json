@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'rust'",
+            "name": "Debug executable 'my_app'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=rust",
-                    "--package=rust"
+                    "--bin=my_app",
+                    "--package=my_app"
                 ],
                 "filter": {
-                    "name": "rust",
+                    "name": "my_app",
                     "kind": "bin"
                 }
             },
@@ -25,17 +25,36 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'rust'",
+            "name": "Debug unit tests in executable 'my_app'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=rust",
-                    "--package=rust"
+                    "--bin=my_app",
+                    "--package=my_app"
                 ],
                 "filter": {
-                    "name": "rust",
+                    "name": "my_app",
                     "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'my_lib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=my_lib"
+                ],
+                "filter": {
+                    "name": "my_lib",
+                    "kind": "lib"
                 }
             },
             "args": [],
