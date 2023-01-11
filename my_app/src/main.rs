@@ -2,9 +2,9 @@ extern crate my_lib;
 
 fn main() {
     my_lib::guess_game::sample();
-    // my_lib::common::sample();
-    // my_lib::ownership::sample();
-    // my_lib::structures::sample();
+    my_lib::common::sample();
+    my_lib::ownership::sample();
+    my_lib::structures::sample();
     // my_lib::enum_match::sample();
     // my_lib::modules::sample();
 

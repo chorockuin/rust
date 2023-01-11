@@ -1,4 +1,4 @@
-const const_var: u32 = 100000;
+const const_var: u32 = 100000; // not allowed using mut
 
 pub fn sample() {
     println!("{}", const_var);
@@ -21,9 +21,13 @@ fn mutation() {
 
 fn shadow() {
     let x = 5;
+    println!("{:p} {}", &x, x);
+
     let x = x + 1;
+    println!("{:p} {}", &x, x);
+
     let x = x + 2;
-    println!("{}", x);
+    println!("{:p} {}", &x, x);
 
     let spaces = " ";
     let spaces = 32;
@@ -40,7 +44,10 @@ fn types() {
 
 fn func(x: i32) -> i8 {
     let y: i8 = { // function
+        println!("{:p} {}", &x, x);
+        
         let x = 3; // x를 정의했으므로, 파라미터로 받은 x는 무시됨
+        println!("{:p} {}", &x, x);
         x + 1 // return
     };
     y // return
@@ -52,7 +59,7 @@ fn condition() {
     // }
     if x < 5 {
     }
-    else if x < 3 {        
+    else if x < 3 {
     }
     else {
     }

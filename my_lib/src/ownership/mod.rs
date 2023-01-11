@@ -1,9 +1,25 @@
+pub fn sample() {
+    stack_var();
+    heap_var();
+    ownership();
+    reference();
+    dangling_ref();
+    slice();
+}
+
 fn stack_var() {
     {
         let s = 32;
-        let s = "stack string";
-        let mut s = "stack string";
-        s = "const string";
+
+        let s = "this string literal #1 is in .rdata section, in case of PE file";
+        println!("{}", s);
+
+        let mut s = "this string literal #2 is in .rdata section, in case of PE file";
+        println!("{}", s);
+
+        s = "this string literal #3 is in .rdata section, in case of PE file";
+        println!("{}", s);
+
         let x = 3;
         let y = x;
     }
@@ -11,7 +27,7 @@ fn stack_var() {
 
 fn heap_var() {
     {
-        let s = String::from("heap string");
+        let s = String::from("this string is in heap");
         let s1 = s;
         // println!("{}", s); // s의 소유권이 s1으로 이동되었으므로 compile error
         let s2 = s1.clone(); // 복사하면 소유권이 이동되지 않으므로 괜찮음
@@ -48,12 +64,18 @@ fn reference() {
     println!("{}", s);
 
     let mut s = String::from("no ref twice");
+    // s는 String이고, s1은 String 참조자(mutable)로 타입이 서로 다름을 확인할 것
     let s1 = &mut s;
-    s1.push_str(",s1");
-    let s2 = &mut s; // s를 s1에서 mutable로 참조했으나, 여기서 s2가 mutable 참조를 뺏어감. 여기 이후부터 s1 못씀
+    // println!("{}", s); // s1에서 s를 mutable 참조하고 있으므로 compile error
+    s1.push_str(",s1"); // s1은 String이 아닌, mutable String 참조자이지만 동일하게 String 조작 함수를 사용할 수 있음
+    println!("{}", s1);
+    // s1이 s를 mutable로 참조했으나, 동일한 스코프 내에서 mutable 참조자는 1개만 존재할 수 있기 때문에
+    // 여기서 s2가 s의 mutable 참조를 뺏어감. 여기 이후부터 s1 못씀
+    let s2 = &mut s;
     // s1.push_str(",s1 again"); // s2에서 s를 mutable 참조하고 있으므로 compile error
     s2.push_str(",s2");
-    // println!("{} {}", s, s2); // s2에서 s를 mutable 참조하고 있으므로 compile error
+    // println!("{}", s); // s2에서 s를 mutable 참조하고 있으므로 compile error
+    println!("{}", s2);
     s.push_str("s"); // s2로 갔던 mutable 참조를 다시 s가 가져옴. 여기 이후부터 s2 못씀
     println!("{}", s);
 
@@ -83,31 +105,25 @@ fn dangling_ref() {
 fn slice() {
     let s = String::from("slice this sentence"); // s는 String
     // s[..5]는 C++의 view와 비슷하다. s에 대한 참조 정보(s의 시작 주소 + 길이 5)를 가진 구조체다
-    // 그런 구조체를 immutable ref한 것이 slice1이다.
-    let slice1 = &s[..5]; 
+    // 그런 구조체를 immutable ref한 것이 slice1, slice2다.
+    let slice1 = &s[..5];
     let slice2 = &s[6..];
+    println!("{}", s);
     println!("{}", slice1);
     println!("{}", slice2);
 
-    let slice3 = first_word(&s);
+    // String s를 immutable 참조로 first_word() 함수에 넘기고,
+    // first_word()는 String s의 일부를 immutable 참조로 리턴하기 때문에 문제 없음
+    let slice3 = first_word(&s); 
     println!("{}", slice3);
 }
 
 fn first_word(s: &String) -> &str {
     let bytes = s.as_bytes();
-    // for (i, &item) in bytes.iter().emumerate() {
-    //     if item == b' ' {
-    //         return &s[0..i];
-    //     }
-    // }
-    &s[..]
-}
-
-pub fn sample() {
-    stack_var();
-    heap_var();
-    ownership();
-    reference();
-    dangling_ref();
-    slice();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..] // String s의 immutable 참조
 }
