@@ -1,19 +1,3 @@
-pub fn sample() {
-    test_box();
-    test_recursive_type();
-    test_deref();
-    test_box_deref();
-    test_my_box_deref();
-    test_force_deref();
-    test_drop();
-    test_rc();
-    test_refcell();
-    test_rc_refcell();
-    test_circular_ref();
-    test_weak_ptr();
-    test_weak_ptr2();
-}
-
 fn test_box() {
     let b = Box::new(5);
     println!("b = {}", b);
@@ -92,14 +76,14 @@ fn test_my_box_deref() {
     assert_eq!(5, *y); // 원래 *(y.deref()) 이렇게 해야 하는데, 역참조 연산자(*)만 쓰면 러스트에서 알아서 해줌
 }
 
+fn hello(name: &str) {
+    println!("Hello, {}!", name);
+}
+
 fn test_force_deref() {
     let m = MyBox::new(String::from("Rust"));
     hello(&(*m)[..]); // m은 스마트 포인터이기 때문에 원래 스트링 슬라이스를 참조하려면 이렇게 해야 된다
     hello(&m); // 하지만 스마트 포인터의 경우 러스트에서 참조 강제를 하기 때문에 이렇게만 쓰면 됨. MyBox Deref -> String Dref
-}
-
-fn hello(name: &str) {
-    println!("Hello, {}!", name);
 }
 
 // 가변 참조자 트레잇도 구현 가능
@@ -147,6 +131,7 @@ fn test_rc() {
 
 // Rc<T> : 동일한 데이터에 대해 복수개의 소유자 허용, 컴파일 타임에 불변 빌림만
 // Box<T> : 동일한 데이터에 대해 단일 소유자만, 컴파일 타임에 불변/가변 빌림 허용
+
 // RefCell<T> : 동일한 데이터에 단일 소유자만, 런타임에 불변/가변 빌림 허용
 // 빌림 규칙은 런타임에 검사되며 잘못된 경우 panic! 발생
 // 싱글 쓰레드에서만 가능
@@ -155,7 +140,6 @@ fn test_rc() {
 fn test_refcell() {
     let x = 5;
     // let y = &mut x; // x가 immutable이기 때문에 컴파일 에러남
-
 }
 
 // 내부 가변성 패턴 예제
@@ -371,4 +355,20 @@ fn test_weak_ptr2() {
         Rc::strong_count(&leaf), // branch 없어졌으므로, leaf strong - 1 = 1
         Rc::weak_count(&leaf), // 0
     );
+}
+
+pub fn sample() {
+    test_box();
+    test_recursive_type();
+    test_deref();
+    test_box_deref();
+    test_my_box_deref();
+    test_force_deref();
+    test_drop();
+    test_rc();
+    test_refcell();
+    test_rc_refcell();
+    test_circular_ref();
+    test_weak_ptr();
+    test_weak_ptr2();
 }

@@ -1,3 +1,4 @@
+// use std::prelude; // default import
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
@@ -7,8 +8,8 @@ pub fn sample() {
 
     loop {
         println!("input your guess: ");
-    
-        let mut guess = String::new();
+
+        let mut guess = String::new(); // associated function(static method in c++)
         io::stdin().read_line(&mut guess).expect("fail to read line");
         let guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
