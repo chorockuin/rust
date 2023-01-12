@@ -93,7 +93,7 @@ fn string() {
     // let h = s1[0]; // compile error가 나는데, 이는 String이 가변길이 문자인 utf8으로 인코딩 되어 있어 indexing의 의미가 모호하기 때문
 
     let hello = "Здравствуйте";
-    let s = &hello[0..4]; // 굳이 indexing 한다면, range slicing으로. 그러나 runtime panic이 발생할 수 있으므로 주의할 것
+    let s = &hello[0..4]; // 굳이 indexing 한다면 range slicing으로. 그러나 unicode scalar value에 맞지 않게 자를 경우 runtime panic이 발생할 수 있으므로 주의할 것
 
     // String을 바라보는 3가지 방식
     // 1. byte
@@ -109,5 +109,55 @@ fn string() {
     // 3. grapheme cluster
 }
 
+use std::collections::HashMap;
+
 fn hashmap() {
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+    let option = scores.get(&String::from("Blue"));
+    match option {
+        Some(score) => println!("{}", score),
+        _ => println!("not found")
+    }
+    for (k, v) in &scores {
+        println!("{} : {}", k, v);
+    }
+
+    let teams = vec![String::from("Blue"), String::from("Yellow")];
+    let initial_scores = vec![10, 50];
+
+    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect(); // type 추론
+
+    let field_name = String::from("Favorite color");
+    let field_value = String::from("Blue");
+
+    let mut map = HashMap::new();
+    map.insert(field_name, field_value);
+    // println!("{} {}", field_name, field_value); // 소유권이 hashmap 내로 이동했기 때문에 compile error
+
+    let k = String::from("key");
+    let v = String::from("value");
+    let mut map = HashMap::new();
+    map.insert(&k, &v); // 참조를 hashmap에 넣으면
+    println!("{} {}", k, v); // 소유권이 이동되지 않으므로 사용 가능함
+
+    let mut scores = HashMap::new();    
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Blue"), 25); // overwrite
+    println!("{:?}", scores);
+
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);    
+    scores.entry(String::from("Yellow")).or_insert(50); // key가 없을 때만 삽입
+    scores.entry(String::from("Blue")).or_insert(50); // key가 있기 때문에 삽입 안되고 무시됨    
+    println!("{:?}", scores);
+
+    let text = "hello world wonderful world";
+    let mut map = HashMap::new();
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0); // key(단어)가 최초로 등장했을 때에 0 삽입. 두번째 등장부터는 1씩 더함
+        *count += 1;
+    }
+    println!("{:?}", map);
 }
