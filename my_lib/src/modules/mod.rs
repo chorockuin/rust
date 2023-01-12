@@ -1,4 +1,4 @@
-mod b;
+mod b; // mod를 사용해 특정 module을 import
 mod c;
 
 mod a {
@@ -15,7 +15,7 @@ fn basic() {
     c::func_c();
 }
 
-use a::func_a;
+use a::func_a; // use를 사용해 특정 module의 function을 하겠다고 명시
 use b::func_b;
 use b::func_bb; // b.rs에 pub use bb::func_bb; 를 넣어놨기 때문에 이렇게 써도 된다
 use c::func_c;

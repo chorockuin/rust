@@ -11,10 +11,13 @@ pub fn sample() {
 
         let mut guess = String::new(); // associated function(static method in c++)
         io::stdin().read_line(&mut guess).expect("fail to read line");
-        let guess: u32 = match guess.trim().parse() {
+        let mut guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
             Err(_) => continue
         };
+
+        guess = magic_number; // for skip
+
         println!("you guessed: {}", guess);
     
         match guess.cmp(&magic_number) {

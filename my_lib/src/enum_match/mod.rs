@@ -63,7 +63,7 @@ fn option_sub(x: Option<i32>) -> Option<i32> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug)] // for {:?} formatting in println!()
 enum UsState{
     Alabama,
     Alaska,
@@ -78,7 +78,7 @@ enum Coin {
 }
 
 fn match_sample() -> u32 {
-    let coin = Coin::Quarter(UsState::Alabama);
+    let coin = Coin::Quarter(UsState::Alabama); // 중첩도 가능
     match coin {
         Coin::Penny => 1,
         Coin::Nickel => 5,
