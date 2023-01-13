@@ -8,8 +8,8 @@ pub mod enum_match;                 // 6. 열거형과 패턴 매칭
 pub mod modules;                    // 7. 모듈
 pub mod collections;                // 8. 일반적인 컬렉션
 pub mod error;                      // 9. 에러 처리
-// pub mod generic_traits_lifetime; // 10. 제너릭 타입, 트레잇, 그리고 라이프타임
-// pub mod testing;                 // 11. 테스팅
+pub mod generic_traits_lifetime;    // 10. 제너릭 타입, 트레잇, 그리고 라이프타임
+pub mod testing;                    // 11. 테스팅
 pub mod command_program;            // 12. I/O 프로젝트: 커맨드 라인 프로그램 만들기
 pub mod functional;                 // 13. 함수형 언어의 특성들: 반복자들과 클로저들
 pub mod cargo_crates;               // 14. Cargo와 Crates.io 더 알아보기
