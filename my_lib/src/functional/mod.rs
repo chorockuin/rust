@@ -1,27 +1,40 @@
+// closure는 익명함수로 lambda와 동일한 개념
+
 use std::thread;
 use std::time::Duration;
+
+pub fn sample() {
+    simple_closure();
+    complex_closure();
+    ownership_closure();
+    simple_iterator();
+    complex_iterator();
+    my_iterator();
+    using_other_iterator_trait_methods();
+}
 
 fn simple_closure() {
     let x = 4;
     // x는 closure 내에서 사용하기위해 캡쳐됨
     // 그렇다면 소유권은? 마찬가지로 뺏어오던가(FnOnce), 불변으로 빌려오던가(Fn), 가변으로 빌려오던가(FnMut)
-    let equal_to_x = |z| z == x;
+    let equal_to_x = |z| z == x; // closure
     let y = 4;
     assert!(equal_to_x(y));
 }
 
-fn ownership_closure() {
-    let x = vec![1, 2, 3];
-    // move 키워드를 통해 소유권을 클로져 안으로 넘겼음(FnOnce)
-    let equal_to_x = move |z| z == x;
-    // 그래서 여기서 x를 참조하려고 하면 에러남
-    // println!("can't use x here: {:?}", x);
-    let y = vec![1, 2, 3];
-    assert!(equal_to_x(y));    
+fn complex_closure() {
+    let simulated_user_specified_value = 10;
+    let simulated_random_number = 7;
+
+    generate_workout(
+        simulated_user_specified_value,
+        simulated_random_number
+    );
 }
 
 struct Cacher<T>
-    // 환경 캡쳐 정책은 1개의 u32타입의 인자를 불변(Fn)으로 빌려오겠다는 것
+    // Cacher가 가질 수 있는 generic type은 아래와 같이 closure로 정의했음
+    // closure의 환경 캡쳐 정책은 1개의 u32타입의 인자를 불변(Fn)으로 빌려오겠다는 것
     // 그리고 1개의 u32 값을 리턴함
     where T: Fn(u32) -> u32 
 {
@@ -54,6 +67,7 @@ impl<T> Cacher<T>
 }
 
 fn generate_workout(intensity: u32, random_number: u32) {
+    // Cacher의 generic type이 closure인데, 2초 대기 후 입력 숫자를 그대로 리턴하는 closure임
     let mut expensive_result = Cacher::new(|num| {
         println!("calculating slowly...");
         thread::sleep(Duration::from_secs(2));
@@ -81,14 +95,14 @@ fn generate_workout(intensity: u32, random_number: u32) {
     }
 }
 
-fn complex_closure() {
-    let simulated_user_specified_value = 10;
-    let simulated_random_number = 7;
-
-    generate_workout(
-        simulated_user_specified_value,
-        simulated_random_number
-    );
+fn ownership_closure() {
+    let x = vec![1, 2, 3];
+    // move 키워드를 통해 소유권을 클로져 안으로 넘겼음(FnOnce)
+    let equal_to_x = move |z| z == x;
+    // 그래서 여기서 x를 참조하려고 하면 에러남
+    // println!("can't use x here: {:?}", x);
+    let y = vec![1, 2, 3];
+    assert!(equal_to_x(y));    
 }
 
 fn simple_iterator() {
@@ -180,14 +194,4 @@ fn using_other_iterator_trait_methods() {
                                  .filter(|x| x % 3 == 0)
                                  .sum();
     assert_eq!(18, sum);
-}
-
-pub fn sample() {
-    simple_closure();
-    complex_closure();
-    ownership_closure();
-    simple_iterator();
-    complex_iterator();
-    my_iterator();
-    using_other_iterator_trait_methods();
 }

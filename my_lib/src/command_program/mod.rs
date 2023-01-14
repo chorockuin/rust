@@ -6,7 +6,7 @@ mod lib;
 pub fn sample() {
     basic();
     let config = lib::Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
+        eprintln!("Problem parsing arguments: {}", err); // 표준 출력 대신 표준 에러를 사용함. 출력되는 것은 같지만 io::stdout 대신, io::stderr에 출력함
         process::exit(1);
     });
 
