@@ -11,11 +11,11 @@ fn main() {
     my_lib::error::sample();
     my_lib::generic_traits_lifetime::sample();
     my_lib::testing::sample();
-    // my_lib::command_program::sample();
-    // my_lib::functional::sample();
-    // my_lib::cargo_crates::sample();
-    // my_lib::smart_pointer::sample();
-    // my_lib::concurrency::sample();
+    my_lib::command_program::sample();
+    my_lib::functional::sample();
+    my_lib::cargo_crates::sample();
+    my_lib::smart_pointer::sample();
+    my_lib::concurrency::sample();
     // // my_lib::oop::sample();
     // // my_lib::pattern_match::sample();
     // // my_lib::advanced::sample();

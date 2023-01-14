@@ -9,27 +9,14 @@ pub struct Config {
     pub case_sensitive: bool,
 }
 
-
-/* impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-
-        let query = args[1].clone();
-        let filename = args[2].clone();
-
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
-
-        Ok(Config { query, filename, case_sensitive })
-    }
-}
- */
-
 impl Config {
     pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
-        args.next();
+        args.next(); // 맨 첫 인자는 커맨드이므로 skip
 
+        let query = String::from("body");
+        let filename = String::from("poem.txt");
+
+/* 원래는 아래처럼 사용자 입력을 받아야 하나, 빠른 테스트를 위해 위 코드로 fix         
         let query = match args.next() {
             Some(arg) => arg,
             None => return Err("Didn't get a query string"),
@@ -39,29 +26,26 @@ impl Config {
             Some(arg) => arg,
             None => return Err("Didn't get a file name"),
         };
-
+ */
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 
         Ok(Config { query, filename, case_sensitive })
     }
 }
 
-/* pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+/*  이렇게 logic을 짜도 되지만, 지루하다   
     let mut results = Vec::new();
-
     for line in contents.lines() {
         if line.contains(query) {
             results.push(line);
         }
     }
-
     results
-}
  */
-
-pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    // 깔끔하게 filter로 정리한 뒤 collect로 모을 수 있음
     contents.lines()
-        .filter(|line| line.contains(query))
+        .filter(|line| line.contains(query)) // python map의 lambda 처럼 사용하면 됨
         .collect()
 }
 

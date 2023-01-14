@@ -4,12 +4,7 @@ use std::process;
 mod lib;
 
 pub fn sample() {
-/*     let config = lib::Config::new(&args).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
- */
-
+    basic();
     let config = lib::Config::new(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
@@ -19,5 +14,13 @@ pub fn sample() {
         eprintln!("Application error: {}", e);
 
         process::exit(1);
+    }
+}
+
+fn basic() {
+    let args: Vec<String> = env::args().collect();
+    println!("{:?}", args);
+    if args.len() > 1 {        
+        println!("{} {}", &args[0], &args[1]);
     }
 }
