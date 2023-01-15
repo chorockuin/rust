@@ -15,7 +15,7 @@ pub mod functional;                 // 13. 함수형 언어의 특성들: 반복
 pub mod cargo_crates;               // 14. Cargo와 Crates.io 더 알아보기
 pub mod smart_pointer;              // 15. 스마트 포인터
 pub mod concurrency;                // 16. 겁없는 동시성
-// pub mod oop;                     // 17. 러스트의 객체 지향 프로그래밍
-// pub mod pattern_match;           // 18. 값의 구조와 매칭되는 패턴
-// pub mod advanced;                // 19. 고급 기능들
-// pub mod web_server;              // 20. 마지막 프로젝트: 멀티스레드 웹서버 만들기
+pub mod oop;                     // 17. 러스트의 객체 지향 프로그래밍
+pub mod pattern_match;           // 18. 값의 구조와 매칭되는 패턴
+pub mod advanced;                // 19. 고급 기능들
+pub mod webserver;              // 20. 마지막 프로젝트: 멀티스레드 웹서버 만들기
