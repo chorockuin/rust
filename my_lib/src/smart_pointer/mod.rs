@@ -1,3 +1,20 @@
+
+pub fn sample() {
+    test_box();
+    test_recursive_type();
+    test_deref();
+    test_box_deref();
+    test_my_box_deref();
+    test_force_deref();
+    test_drop();
+    test_rc();
+    test_refcell();
+    test_rc_refcell();
+    test_circular_ref();
+    test_weak_ptr();
+    test_weak_ptr2();
+}
+
 fn test_box() {
     let b = Box::new(5);
     println!("b = {}", b);
@@ -11,21 +28,26 @@ enum Message {
     ChangeColor(i32, i32, i32),
 }
 
-// 러스트에서는 컴파일 타임에 타입이 차지하는 공간을 정확히 알 수 있어야 한다
-// 아래 정의한 List 타입은 재귀적이므로 차지하는 공간을 컴파일 타임에 정확히 알 수 없다
-// 따라서 컴파일 에러가 난다
-// enum List {
-//     Cons(i32, List),
-//     Nil,
-// }
-// use List::{Cons, Nil};
-// fn test_recursive_type() {
-//     let list = Cons(1, Cons(2, Cons(3, Nil))); // 런타임에서만 차지하는 메모리 공간을 확인할 수 있다
-// }
+/*
+러스트에서는 컴파일 타임에 타입이 차지하는 공간을 정확히 알 수 있어야 한다
+아래 정의한 List 타입은 재귀적이므로 차지하는 공간을 컴파일 타임에 정확히 알 수 없기 때문에 컴파일 에러가 난다
+ */
 
-// 아래 정의한 List 타입은 재귀적인 것처럼 보이나 그렇지 않다
-// Box<List>이 차지하는 공간은 usize으로 컴파일 타임에 정확히 알 수 있기 때문
-// 따라서 컴파일 된다
+/* 
+enum List {
+    Cons(i32, List),
+    Nil,
+}
+use List::{Cons, Nil};
+fn test_recursive_type() {
+    let list = Cons(1, Cons(2, Cons(3, Nil))); // 런타임에서만 차지하는 메모리 공간을 확인할 수 있다
+}
+ */
+
+/* 
+아래 정의한 List 타입은 재귀적인 것처럼 보이나 그렇지 않다
+Box<List>이 차지하는 공간은 usize으로 컴파일 타임에 정확히 알 수 있기 때문에 컴파일 된다
+ */
 enum List {
     Cons(i32, Box<List>),
     Nil,
@@ -54,14 +76,14 @@ fn test_box_deref() {
 
 // Box 흉내내기
 use std::ops::{Deref, DerefMut};
-struct MyBox<T>(T); // T 인스턴스 1개를 가지고 있는 구조체
+struct MyBox<T>(T); // 한개의 요소 T를 가진 튜플 구조체. 즉, self가 튜플이며, self.0가 T의 인스턴스가 됨
 impl<T> MyBox<T> {
     fn new(x: T) -> MyBox<T> { // self를 인자로 받지 않았으므로 연관함수. MyBox::new() 형태로 사용(C++ static 메소드 비슷)
         MyBox(x)
     }
 }
 impl<T> Deref for MyBox<T> { // MyBox<T>에 Deref 트레잇(C++ abstract 메소드 비슷)을 입혀야 역참조 가능
-    type Target = T; // 트레잇이 사용하는 연관타입을 정의한다고 함
+    type Target = T; // 트레잇이 사용하는 연관타입을 정의한다고 함. 여기서는 Deref 트레잇이 T 타입을 사용하므로 이렇게 정의함
 
     fn deref(&self) -> &T {
         &self.0 // 가지고 있는 T 인스턴스의 참조를 리턴
@@ -83,7 +105,7 @@ fn hello(name: &str) {
 fn test_force_deref() {
     let m = MyBox::new(String::from("Rust"));
     hello(&(*m)[..]); // m은 스마트 포인터이기 때문에 원래 스트링 슬라이스를 참조하려면 이렇게 해야 된다
-    hello(&m); // 하지만 스마트 포인터의 경우 러스트에서 참조 강제를 하기 때문에 이렇게만 쓰면 됨. MyBox Deref -> String Dref
+    hello(&m); // 하지만 스마트 포인터의 경우 러스트에서 참조 강제(MyBox Deref -> String Dref)를 하기 때문에 이렇게만 쓰면 됨
 }
 
 // 가변 참조자 트레잇도 구현 가능
@@ -107,9 +129,19 @@ impl<T> Drop for MyBox<T> {
     }
 }
 
+/* 
+Rc<T> : 동일한 데이터에 대해 복수개의 소유자 허용, 컴파일 타임에 불변 빌림만
+Box<T> : 동일한 데이터에 대해 단일 소유자만, 컴파일 타임에 불변/가변 빌림 허용
+RefCell<T> : 동일한 데이터에 단일 소유자만, 런타임에 불변/가변 빌림 허용
+빌림 규칙은 런타임에 검사되며 잘못된 경우 panic! 발생
+싱글 쓰레드에서만 가능
+RefCell<T> 가 불변이더라도 내부 값을 변경할 수 있으며, 이를 내부 가변성 패턴이라고 함
+C++에서 pointer는 const로 불변하게 하고, pointer가 가리키는 값은 가변하게끔 하는 것과 비슷
+ */
+
 // Rc<T>는 오직 싱글 쓰레드에서만 가능
 enum RcList {
-    Cons(i32, Rc<RcList>),
+    RcCons(i32, Rc<RcList>),
     Nil,
 }
 use std::rc::Rc;
@@ -118,25 +150,17 @@ fn test_rc() {
     let b = Cons(3, a);
     // let c = Cons(4, a); // a의 소유권이 b 안으로 이동했기 때문에 컴파일 에러 난다
 
-    let x = Rc::new(RcList::Cons(5, Rc::new(RcList::Cons(10, Rc::new(RcList::Nil)))));
+    let x = Rc::new(RcList::RcCons(5, Rc::new(RcList::RcCons(10, Rc::new(RcList::Nil)))));
     println!("count after creating x = {}", Rc::strong_count(&x));
-    let y = RcList::Cons(3, Rc::clone(&x)); // Rc::clone()은 참조 카운트만 증가시킴. deep copy 아니며 deep copy를 하려면 x.clone() 해야 함
+    let y = RcList::RcCons(3, Rc::clone(&x)); // Rc::clone()은 참조 카운트만 증가시킴. deep copy 아니며 deep copy를 하려면 x.clone() 해야 함
     println!("count after creating y = {}", Rc::strong_count(&x));
     {
-        let z = RcList::Cons(4, Rc::clone(&x));
+        let z = RcList::RcCons(4, Rc::clone(&x));
         println!("count after creating z = {}", Rc::strong_count(&x));
     }
     println!("count after z goes out of scope = {}", Rc::strong_count(&x));
 }
 
-// Rc<T> : 동일한 데이터에 대해 복수개의 소유자 허용, 컴파일 타임에 불변 빌림만
-// Box<T> : 동일한 데이터에 대해 단일 소유자만, 컴파일 타임에 불변/가변 빌림 허용
-
-// RefCell<T> : 동일한 데이터에 단일 소유자만, 런타임에 불변/가변 빌림 허용
-// 빌림 규칙은 런타임에 검사되며 잘못된 경우 panic! 발생
-// 싱글 쓰레드에서만 가능
-// RefCell<T> 가 불변이더라도 내부 값을 변경할 수 있으며, 이를 내부 가변성 패턴이라고 함
-// C++에서 pointer는 const로 불변하게 하고, pointer가 가리키는 값은 가변하게끔 하는 것과 비슷
 fn test_refcell() {
     let x = 5;
     // let y = &mut x; // x가 immutable이기 때문에 컴파일 에러남
@@ -355,20 +379,4 @@ fn test_weak_ptr2() {
         Rc::strong_count(&leaf), // branch 없어졌으므로, leaf strong - 1 = 1
         Rc::weak_count(&leaf), // 0
     );
-}
-
-pub fn sample() {
-    test_box();
-    test_recursive_type();
-    test_deref();
-    test_box_deref();
-    test_my_box_deref();
-    test_force_deref();
-    test_drop();
-    test_rc();
-    test_refcell();
-    test_rc_refcell();
-    test_circular_ref();
-    test_weak_ptr();
-    test_weak_ptr2();
 }
